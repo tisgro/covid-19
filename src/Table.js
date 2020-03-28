@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components/macro";
 import Bars from "./Bars";
 
@@ -15,7 +15,11 @@ const Table = styled.table`
 `;
 
 const Head = styled.thead``;
-const Body = styled.tbody``;
+
+const Body = styled.tbody`
+  background: ${props => props.isSelected && `var(--background-highlight)`};
+  transition: background-color 200ms;
+`;
 
 const Row = styled.tr`
   vertical-align: bottom;
@@ -46,25 +50,42 @@ const Cell = styled.td.attrs(props => ({
 
 const formatter = new Intl.NumberFormat("da-DK");
 
-export default ({ data }) => (
-  <Table>
-    <Head>
-      <Row>
-        <Header>Country</Header>
-        <Header align="end">Total</Header>
-        <Header align="end">Today</Header>
-        <Header align="center">Per Day</Header>
-      </Row>
-    </Head>
-    <Body>
+export default ({ data }) => {
+  const [selectedCountries, setSelectedCountries] = useState([]);
+  const onCountryClick = country => {
+    if (_.includes(selectedCountries, country)) {
+      setSelectedCountries(_.without(selectedCountries, country));
+    } else {
+      setSelectedCountries(_.concat(selectedCountries, country));
+    }
+  };
+
+  return (
+    <Table>
+      <Head>
+        <Row>
+          <Header>Country</Header>
+          <Header align="end">Total</Header>
+          <Header align="end">Today</Header>
+          <Header align="center">Per Day</Header>
+        </Row>
+      </Head>
       {_.chain(data)
         .orderBy(["totalCases"], ["desc"])
         .map(
-          (
-            { country, region, newCases, newDeaths, totalCases, totalDeaths },
-            i
-          ) => (
-            <>
+          ({
+            country,
+            region,
+            newCases,
+            newDeaths,
+            totalCases,
+            totalDeaths
+          }) => (
+            <Body
+              key={country}
+              isSelected={_.includes(selectedCountries, country)}
+              onClick={() => onCountryClick(country)}
+            >
               <Row>
                 <Cell rowSpan={2}>
                   {country}
@@ -91,10 +112,10 @@ export default ({ data }) => (
                   <Bars data={newDeaths} type="deaths" factor={10} />
                 </Cell>
               </Row>
-            </>
+            </Body>
           )
         )
         .value()}
-    </Body>
-  </Table>
-);
+    </Table>
+  );
+};

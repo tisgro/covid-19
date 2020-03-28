@@ -20,6 +20,7 @@ code {
   --text-secondary: #666;
   --border-color-default: #eee;
   --border-color-secondary: #f8f8f8;
+  --background-highlight: #f8f8f8;
   --data-color-cases: #ffa464;
   --data-color-deaths: #ff6484;
 }
