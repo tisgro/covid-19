@@ -5,11 +5,11 @@ import styled from "styled-components/macro";
 const Bar = styled.div.attrs(props => ({
   title: props.datum,
   style: {
-    height: props.datum / props.factor + "px",
+    height: Math.max(props.datum, 0) / props.factor + "px",
     background: `var(--data-color-${props.type})`
   }
 }))`
-  height: 10px;
+  height: 0px;
   width: 1px;
   margin-top: 4px;
   margin-left: 1px;
