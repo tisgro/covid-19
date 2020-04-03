@@ -1,16 +1,12 @@
 import _ from "lodash";
 import React, { useState } from "react";
+import useMedia from "use-media";
 import styled from "styled-components/macro";
 import Bars from "./Bars";
 
-const Region = styled.span`
-  margin-left: 4px;
-  font-size: 0.8em;
-  color: var(--text-secondary);
-`;
-
 const Table = styled.table`
-  width: 100%;
+  width: ${props => (props.isWide ? "auto" : "100%")};
+  margin: 0 auto;
   border-spacing: 0;
 `;
 
@@ -39,82 +35,122 @@ const Cell = styled.td.attrs(props => ({
   text-align: ${props => props.align || "start"};
   padding: 0;
   padding-left: ${props => (props.align === "end" ? "10px" : undefined)};
-  color: ${props => props.type && `var(--data-color-${props.type})`};
-
-  border-bottom: 1px solid
-    ${props =>
-      props.isBorderSecondary
-        ? "var(--border-color-secondary)"
-        : "var(--border-color-default)"};
+  color: ${props => props.type && `var(--data-color-${props.type}-default)`};
+  border-bottom: ${props =>
+    !props.isBorderless && "1px solid var(--border-color-default)"};
 `;
 
 const formatter = new Intl.NumberFormat("da-DK");
 
-export default ({ data }) => {
-  const [selectedCountries, setSelectedCountries] = useState([]);
-  const onCountryClick = country => {
-    if (_.includes(selectedCountries, country)) {
-      setSelectedCountries(_.without(selectedCountries, country));
-    } else {
-      setSelectedCountries(_.concat(selectedCountries, country));
-    }
-  };
+const CountryRow = ({
+  isWide,
+  country,
+  newCases,
+  newDeaths,
+  totalCases,
+  totalDeaths
+}) => {
+  const [isSelected, setIsSelected] = useState(false);
+
+  const totalCasesFormatted = formatter.format(totalCases);
+  const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
+  const casesBars = <Bars data={newCases} type="cases" />;
+  const totalDeathsFormatted = formatter.format(totalDeaths);
+  const latestDeathsFormatted = `+${formatter.format(_.last(newDeaths))}`;
+  const deathsBars = <Bars data={newDeaths} type="deaths" factor={10} />;
 
   return (
-    <Table>
+    <Body isSelected={isSelected} onClick={() => setIsSelected(!isSelected)}>
+      {isWide ? (
+        <Row>
+          <Cell>{country}</Cell>
+          <Cell align="end" type="cases">
+            {totalCasesFormatted}
+          </Cell>
+          <Cell align="end" type="cases">
+            {latestCasesFormatted}
+          </Cell>
+          <Cell align="end" isBorderless>
+            {casesBars}
+          </Cell>
+          <Cell align="end" isBorderless></Cell>
+          <Cell align="end" type="deaths">
+            {totalDeathsFormatted}
+          </Cell>
+          <Cell align="end" type="deaths">
+            {latestDeathsFormatted}
+          </Cell>
+          <Cell align="end" isBorderless>
+            {deathsBars}
+          </Cell>
+        </Row>
+      ) : (
+        <>
+          <Row>
+            <Cell rowSpan={2}>{country}</Cell>
+            <Cell colSpan={2} align="end" isBorderless>
+              {casesBars}
+            </Cell>
+            <Cell colSpan={2} align="end" isBorderless>
+              {deathsBars}
+            </Cell>
+          </Row>
+          <Row>
+            <Cell align="end" type="cases">
+              {totalCasesFormatted}
+            </Cell>
+            <Cell align="end" type="cases">
+              {latestCasesFormatted}
+            </Cell>
+            <Cell align="end" type="deaths">
+              {totalDeathsFormatted}
+            </Cell>
+            <Cell align="end" type="deaths">
+              {latestDeathsFormatted}
+            </Cell>
+          </Row>
+        </>
+      )}
+    </Body>
+  );
+};
+
+export default ({ data }) => {
+  const isWide = useMedia({ minWidth: "700px" });
+
+  return (
+    <Table isWide={isWide}>
       <Head>
         <Row>
           <Header>Country</Header>
-          <Header align="end">Total</Header>
-          <Header align="end">Today</Header>
-          <Header align="center">Per Day</Header>
+          {isWide ? (
+            <>
+              <Header colSpan="3" align="end">
+                Cases
+              </Header>
+              <Header align="end"></Header>
+              <Header colSpan="3" align="end">
+                Deaths
+              </Header>
+            </>
+          ) : (
+            <>
+              <Header colSpan="2" align="end">
+                Cases
+              </Header>
+              <Header colSpan="2" align="end">
+                Deaths
+              </Header>
+            </>
+          )}
         </Row>
       </Head>
       {_.chain(data)
+        .filter(({ totalCases }) => totalCases > 600)
         .orderBy(["totalCases"], ["desc"])
-        .map(
-          ({
-            country,
-            region,
-            newCases,
-            newDeaths,
-            totalCases,
-            totalDeaths
-          }) => (
-            <Body
-              key={country}
-              isSelected={_.includes(selectedCountries, country)}
-              onClick={() => onCountryClick(country)}
-            >
-              <Row>
-                <Cell rowSpan={2}>
-                  {country}
-                  {region && region !== country && <Region>{region}</Region>}
-                </Cell>
-                <Cell align="end" type="cases" isBorderSecondary>
-                  {formatter.format(totalCases)}
-                </Cell>
-                <Cell align="end" type="cases" isBorderSecondary>
-                  +{formatter.format(_.last(newCases))}
-                </Cell>
-                <Cell align="end" isBorderSecondary>
-                  <Bars data={newCases} type="cases" />
-                </Cell>
-              </Row>
-              <Row>
-                <Cell align="end" type="deaths">
-                  {formatter.format(totalDeaths)}
-                </Cell>
-                <Cell align="end" type="deaths">
-                  +{formatter.format(_.last(newDeaths))}
-                </Cell>
-                <Cell align="end">
-                  <Bars data={newDeaths} type="deaths" factor={10} />
-                </Cell>
-              </Row>
-            </Body>
-          )
-        )
+        .map((countryData, i) => (
+          <CountryRow key={i} {...{ isWide, ...countryData }} />
+        ))
         .value()}
     </Table>
   );
