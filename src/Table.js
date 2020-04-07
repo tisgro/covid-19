@@ -54,10 +54,12 @@ const CountryRow = ({
 
   const totalCasesFormatted = formatter.format(totalCases);
   const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
-  const casesBars = <Bars data={newCases} type="cases" />;
+  const casesBars = <Bars data={newCases} type="cases" isCompact={!isWide} />;
   const totalDeathsFormatted = formatter.format(totalDeaths);
   const latestDeathsFormatted = `+${formatter.format(_.last(newDeaths))}`;
-  const deathsBars = <Bars data={newDeaths} type="deaths" factor={10} />;
+  const deathsBars = (
+    <Bars data={newDeaths} type="deaths" factor={10} isCompact={!isWide} />
+  );
 
   return (
     <Body isSelected={isSelected} onClick={() => setIsSelected(!isSelected)}>
