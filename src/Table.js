@@ -5,8 +5,10 @@ import styled from "styled-components/macro";
 import Heading from "./Heading";
 import Bars from "./Bars";
 
+const WIDE_BREAKPOINT = "720px";
+
 const Table = styled.table`
-  width: ${props => (props.isWide ? "auto" : "100%")};
+  width: 100%;
   margin: 0 auto;
   border-spacing: 0;
 `;
@@ -16,7 +18,7 @@ const Caption = styled.caption``;
 const Head = styled.thead``;
 
 const Body = styled.tbody`
-  background: ${props => props.isSelected && `var(--background-highlight)`};
+  background: ${(props) => props.isSelected && `var(--background-highlight)`};
   transition: background-color 200ms;
 `;
 
@@ -28,18 +30,18 @@ const Header = styled.th`
   font-weight: 300;
   font-size: 0.8em;
   text-transform: uppercase;
-  text-align: ${props => props.align || "start"};
+  text-align: ${(props) => props.align || "start"};
   border-bottom: 1px solid var(--border-color-default);
 `;
 
-const Cell = styled.td.attrs(props => ({
-  rowSpan: props.rowSpan
+const Cell = styled.td.attrs((props) => ({
+  rowSpan: props.rowSpan,
 }))`
-  text-align: ${props => props.align || "start"};
+  text-align: ${(props) => props.align || "start"};
   padding: 0;
-  padding-left: ${props => (props.align === "end" ? "10px" : undefined)};
-  color: ${props => props.type && `var(--data-color-${props.type}-default)`};
-  border-bottom: ${props =>
+  padding-left: ${(props) => (props.align === "end" ? "10px" : undefined)};
+  color: ${(props) => props.type && `var(--data-color-${props.type}-default)`};
+  border-bottom: ${(props) =>
     !props.isBorderless && "1px solid var(--border-color-default)"};
 `;
 
@@ -51,7 +53,7 @@ const CountryRow = ({
   newCases,
   newDeaths,
   totalCases,
-  totalDeaths
+  totalDeaths,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
 
@@ -120,39 +122,41 @@ const CountryRow = ({
   );
 };
 
-export default ({ data, dateRange }) => {
-  const isWide = useMedia({ minWidth: "700px" });
+export default ({ data, dateRange, isLoading }) => {
+  const isWide = useMedia({ minWidth: WIDE_BREAKPOINT });
 
   return (
     <Table isWide={isWide}>
       <Caption>
-        <Heading dateRange={dateRange} />
+        <Heading dateRange={dateRange} isLoading={isLoading} />
       </Caption>
-      <Head>
-        <Row>
-          <Header>Country</Header>
-          {isWide ? (
-            <>
-              <Header colSpan="3" align="end">
-                Cases
-              </Header>
-              <Header align="end"></Header>
-              <Header colSpan="3" align="end">
-                Deaths
-              </Header>
-            </>
-          ) : (
-            <>
-              <Header colSpan="2" align="end">
-                Cases
-              </Header>
-              <Header colSpan="2" align="end">
-                Deaths
-              </Header>
-            </>
-          )}
-        </Row>
-      </Head>
+      {_.size(data) > 0 && (
+        <Head>
+          <Row>
+            <Header>Country</Header>
+            {isWide ? (
+              <>
+                <Header colSpan="3" align="end">
+                  Cases
+                </Header>
+                <Header align="end"></Header>
+                <Header colSpan="3" align="end">
+                  Deaths
+                </Header>
+              </>
+            ) : (
+              <>
+                <Header colSpan="2" align="end">
+                  Cases
+                </Header>
+                <Header colSpan="2" align="end">
+                  Deaths
+                </Header>
+              </>
+            )}
+          </Row>
+        </Head>
+      )}
       {_.chain(data)
         .filter(({ totalCases }) => totalCases > 600)
         .orderBy(["totalCases"], ["desc"])

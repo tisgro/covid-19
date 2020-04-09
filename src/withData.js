@@ -72,7 +72,7 @@ export default () => WrappedComponent => props => {
   });
 
   if (!isLoadedCases || !isLoadedDeaths) {
-    return "Loading...";
+    return <WrappedComponent isLoading {...props} />;
   }
 
   if (error) {

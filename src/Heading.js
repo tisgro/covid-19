@@ -16,14 +16,16 @@ const Title = styled.div`
   font-weight: 300;
 `;
 
-export default ({ dateRange }) => (
+export default ({ dateRange, isLoading }) => (
   <Header>
     <Title>COVID-19</Title>
     <div>
-      {_.chain(dateRange)
-        .map(d => format(d, "d MMM"))
-        .join(" → ")
-        .value()}
+      {isLoading
+        ? "Loading..."
+        : _.chain(dateRange)
+            .map(d => format(d, "d MMM"))
+            .join(" → ")
+            .value()}
     </div>
   </Header>
 );
