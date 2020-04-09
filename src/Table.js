@@ -2,6 +2,7 @@ import _ from "lodash";
 import React, { useState } from "react";
 import useMedia from "use-media";
 import styled from "styled-components/macro";
+import Heading from "./Heading";
 import Bars from "./Bars";
 
 const Table = styled.table`
@@ -9,6 +10,8 @@ const Table = styled.table`
   margin: 0 auto;
   border-spacing: 0;
 `;
+
+const Caption = styled.caption``;
 
 const Head = styled.thead``;
 
@@ -117,11 +120,14 @@ const CountryRow = ({
   );
 };
 
-export default ({ data }) => {
+export default ({ data, dateRange }) => {
   const isWide = useMedia({ minWidth: "700px" });
 
   return (
     <Table isWide={isWide}>
+      <Caption>
+        <Heading dateRange={dateRange} />
+      </Caption>
       <Head>
         <Row>
           <Header>Country</Header>

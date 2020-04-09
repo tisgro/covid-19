@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { parse } from "date-fns";
 import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
 
@@ -7,6 +8,8 @@ import Papa from "papaparse";
 const INDEX_REGION = 0;
 const INDEX_COUNTRY = 1;
 const INDEX_FIRST_DAY = 4;
+
+const DATE_FORMAT = "M/d/yy";
 
 const URL_CASES =
   "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
@@ -23,7 +26,7 @@ const zipSum = (objs, prop) =>
 const fetchData = (url, setData, setError, setIsLoaded) =>
   fetch(url)
     .then(response => response.text())
-    .then(rawData => setData(rawData))
+    .then(rawData => setData(Papa.parse(rawData).data))
     .catch(error => setError(error.message))
     .finally(() => setIsLoaded(true));
 
@@ -76,8 +79,9 @@ export default () => WrappedComponent => props => {
     return "Error: " + error;
   }
 
-  const cases = parseData(Papa.parse(rawCases).data);
-  const deaths = parseData(Papa.parse(rawDeaths).data);
+  const cases = parseData(rawCases);
+  const deaths = parseData(rawDeaths);
+
   const data = _.map(cases, ({ country, deltas, total }) => ({
     country,
     newCases: deltas,
@@ -86,5 +90,10 @@ export default () => WrappedComponent => props => {
     totalDeaths: _.get(_.find(deaths, { country }), "total")
   }));
 
-  return <WrappedComponent data={data} {...props} />;
+  const dateRange = _.map(
+    [rawCases[0][INDEX_FIRST_DAY], _.last(rawCases[0])],
+    d => parse(d, DATE_FORMAT, new Date())
+  );
+
+  return <WrappedComponent data={data} dateRange={dateRange} {...props} />;
 };
