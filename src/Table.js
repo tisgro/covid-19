@@ -5,7 +5,7 @@ import styled from "styled-components/macro";
 import Heading from "./Heading";
 import Bars from "./Bars";
 
-const WIDE_BREAKPOINT = "720px";
+const WIDE_BREAKPOINT = "770px";
 
 const Table = styled.table`
   width: 100%;
