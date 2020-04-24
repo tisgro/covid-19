@@ -45,6 +45,11 @@ const Cell = styled.td.attrs((props) => ({
     !props.isBorderless && "1px solid var(--border-color-default)"};
 `;
 
+const Sortable = styled.span`
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+`;
+
 const formatter = new Intl.NumberFormat("da-DK");
 
 const CountryRow = ({
@@ -124,6 +129,19 @@ const CountryRow = ({
 
 export default ({ data, dateRange, isLoading }) => {
   const isWide = useMedia({ minWidth: WIDE_BREAKPOINT });
+  const [sortKey, setSortKey] = useState("totalCases");
+
+  const casesHeader = (
+    <Sortable onClick={() => setSortKey("totalCases")}>
+      {sortKey === "totalCases" && "↓"} Cases
+    </Sortable>
+  );
+
+  const deathsHeader = (
+    <Sortable onClick={() => setSortKey("totalDeaths")}>
+      {sortKey === "totalDeaths" && "↓"} Deaths
+    </Sortable>
+  );
 
   return (
     <Table isWide={isWide}>
@@ -137,20 +155,20 @@ export default ({ data, dateRange, isLoading }) => {
             {isWide ? (
               <>
                 <Header colSpan="3" align="end">
-                  Cases
+                  {casesHeader}
                 </Header>
                 <Header align="end"></Header>
                 <Header colSpan="3" align="end">
-                  Deaths
+                  {deathsHeader}
                 </Header>
               </>
             ) : (
               <>
                 <Header colSpan="2" align="end">
-                  Cases
+                  {casesHeader}
                 </Header>
                 <Header colSpan="2" align="end">
-                  Deaths
+                  {deathsHeader}
                 </Header>
               </>
             )}
@@ -158,8 +176,8 @@ export default ({ data, dateRange, isLoading }) => {
         </Head>
       )}
       {_.chain(data)
-        .filter(({ totalCases }) => totalCases > 600)
-        .orderBy(["totalCases"], ["desc"])
+        .filter(({ totalCases }) => totalCases > 1000)
+        .orderBy([sortKey], ["desc"])
         .map((countryData, i) => (
           <CountryRow key={i} {...{ isWide, ...countryData }} />
         ))
