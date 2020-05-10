@@ -36,6 +36,7 @@ const Header = styled.th`
 
 const Cell = styled.td.attrs((props) => ({
   rowSpan: props.rowSpan,
+  width: props.width,
 }))`
   text-align: ${(props) => props.align || "start"};
   padding: 0;
@@ -64,11 +65,11 @@ const CountryRow = ({
 
   const totalCasesFormatted = formatter.format(totalCases);
   const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
-  const casesBars = <Bars data={newCases} type="cases" isCompact={!isWide} />;
+  const casesBars = <Bars data={newCases} type="cases" isCompact />;
   const totalDeathsFormatted = formatter.format(totalDeaths);
   const latestDeathsFormatted = `+${formatter.format(_.last(newDeaths))}`;
   const deathsBars = (
-    <Bars data={newDeaths} type="deaths" factor={10} isCompact={!isWide} />
+    <Bars data={newDeaths} type="deaths" factor={10} isCompact />
   );
 
   return (
@@ -82,7 +83,7 @@ const CountryRow = ({
           <Cell align="end" type="cases">
             {latestCasesFormatted}
           </Cell>
-          <Cell align="end" isBorderless>
+          <Cell align="end" width={1} isBorderless>
             {casesBars}
           </Cell>
           <Cell align="end" isBorderless></Cell>
@@ -92,7 +93,7 @@ const CountryRow = ({
           <Cell align="end" type="deaths">
             {latestDeathsFormatted}
           </Cell>
-          <Cell align="end" isBorderless>
+          <Cell align="end" width={1} isBorderless>
             {deathsBars}
           </Cell>
         </Row>
