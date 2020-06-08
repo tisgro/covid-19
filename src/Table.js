@@ -100,7 +100,11 @@ const CountryRow = ({
       ) : (
         <>
           <Row>
-            <Cell rowSpan={2}>{country}</Cell>
+            <Cell colSpan={4} isBorderless>
+              {country}
+            </Cell>
+          </Row>
+          <Row>
             <Cell colSpan={2} align="end" isBorderless>
               {casesBars}
             </Cell>
@@ -112,13 +116,13 @@ const CountryRow = ({
             <Cell align="end" type="cases">
               {totalCasesFormatted}
             </Cell>
-            <Cell align="end" type="cases">
+            <Cell align="end" type="cases" width={1}>
               {latestCasesFormatted}
             </Cell>
             <Cell align="end" type="deaths">
               {totalDeathsFormatted}
             </Cell>
-            <Cell align="end" type="deaths">
+            <Cell align="end" type="deaths" width={1}>
               {latestDeathsFormatted}
             </Cell>
           </Row>
@@ -152,9 +156,9 @@ export default ({ data, dateRange, isLoading }) => {
       {_.size(data) > 0 && (
         <Head>
           <Row>
-            <Header>Country</Header>
             {isWide ? (
               <>
+                <Header>Country</Header>
                 <Header colSpan="3" align="end">
                   {casesHeader}
                 </Header>
