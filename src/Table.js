@@ -1,13 +1,11 @@
 import _ from "lodash";
 import React, { useState } from "react";
 import { useRouteMatch } from "react-router-dom";
-import useMedia from "use-media";
 import styled from "styled-components/macro";
+import * as helpers from "./helpers";
+import useBreakpoint from "./useBreakpoint";
 import Heading from "./Heading";
 import Bars from "./Bars";
-import * as helpers from "./helpers";
-
-const WIDE_BREAKPOINT = "1000px";
 
 const Table = styled.table`
   width: 100%;
@@ -56,7 +54,7 @@ const Sortable = styled.span`
 const formatter = new Intl.NumberFormat("da-DK");
 
 const CountryRow = ({
-  isWide,
+  breakpoint,
   filterCountry,
   country,
   newCases,
@@ -89,7 +87,7 @@ const CountryRow = ({
 
   return (
     <Body isSelected={isSelected} onClick={() => setIsSelected(!isSelected)}>
-      {isWide ? (
+      {breakpoint === "wide" && (
         <Row>
           <Cell>{country}</Cell>
           <Cell align="end" type="cases">
@@ -112,7 +110,8 @@ const CountryRow = ({
             {deathsBars}
           </Cell>
         </Row>
-      ) : (
+      )}
+      {breakpoint === "regular" && (
         <>
           <Row>
             <Cell colSpan={4} isBorderless>
@@ -143,6 +142,41 @@ const CountryRow = ({
           </Row>
         </>
       )}
+      {breakpoint === "narrow" && (
+        <>
+          <Row>
+            <Cell colSpan={2} isBorderless>
+              {country}
+            </Cell>
+          </Row>
+          <Row>
+            <Cell colSpan={2} align="end" isBorderless>
+              {casesBars}
+            </Cell>
+          </Row>
+          <Row>
+            <Cell align="end" type="cases" isBorderless>
+              {totalCasesFormatted}
+            </Cell>
+            <Cell align="end" type="cases" isBorderless width={1}>
+              {latestCasesFormatted}
+            </Cell>
+          </Row>
+          <Row>
+            <Cell colSpan={2} align="end" isBorderless>
+              {deathsBars}
+            </Cell>
+          </Row>
+          <Row>
+            <Cell align="end" type="deaths">
+              {totalDeathsFormatted}
+            </Cell>
+            <Cell align="end" type="deaths" width={1}>
+              {latestDeathsFormatted}
+            </Cell>
+          </Row>
+        </>
+      )}
     </Body>
   );
 };
@@ -151,7 +185,7 @@ export default ({ data, dateRange, isLoading }) => {
   const routeMatch = useRouteMatch("/:country");
   const filterCountry = routeMatch?.params.country;
 
-  const isWide = useMedia({ minWidth: WIDE_BREAKPOINT });
+  const breakpoint = useBreakpoint();
   const [sortKey, setSortKey] = useState("totalCases");
 
   const casesHeader = (
@@ -167,14 +201,14 @@ export default ({ data, dateRange, isLoading }) => {
   );
 
   return (
-    <Table isWide={isWide}>
+    <Table>
       <Caption>
         <Heading dateRange={dateRange} isLoading={isLoading} />
       </Caption>
       {_.size(data) > 0 && (
         <Head>
           <Row>
-            {isWide ? (
+            {breakpoint === "wide" && (
               <>
                 <Header>Country</Header>
                 <Header colSpan="3" align="end">
@@ -185,13 +219,21 @@ export default ({ data, dateRange, isLoading }) => {
                   {deathsHeader}
                 </Header>
               </>
-            ) : (
+            )}
+            {breakpoint === "regular" && (
               <>
                 <Header colSpan="2" align="end">
                   {casesHeader}
                 </Header>
                 <Header colSpan="2" align="end">
                   {deathsHeader}
+                </Header>
+              </>
+            )}
+            {breakpoint === "narrow" && (
+              <>
+                <Header colSpan="2" align="end">
+                  {casesHeader} / {deathsHeader}
                 </Header>
               </>
             )}
@@ -204,7 +246,10 @@ export default ({ data, dateRange, isLoading }) => {
         )
         .orderBy([sortKey], ["desc"])
         .map((countryData, i) => (
-          <CountryRow key={i} {...{ filterCountry, isWide, ...countryData }} />
+          <CountryRow
+            key={i}
+            {...{ filterCountry, breakpoint, ...countryData }}
+          />
         ))
         .value()}
     </Table>
