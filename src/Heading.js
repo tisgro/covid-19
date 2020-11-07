@@ -1,5 +1,6 @@
 import _ from "lodash";
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { format } from "date-fns";
 import styled from "styled-components/macro";
 
@@ -18,12 +19,21 @@ const Title = styled.div`
 
 export default ({ dateRange, isLoading }) => (
   <Header>
-    <Title>COVID-19</Title>
+    <Title>
+      COVID-19:{" "}
+      <NavLink exact to="/">
+        All
+      </NavLink>
+      {" / "}
+      <NavLink exact to="/denmark">
+        DK
+      </NavLink>
+    </Title>
     <div>
       {isLoading
         ? "Loading..."
         : _.chain(dateRange)
-            .map(d => format(d, "d MMM"))
+            .map((d) => format(d, "d MMM"))
             .join(" → ")
             .value()}
     </div>

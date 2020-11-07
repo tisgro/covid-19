@@ -1,3 +1,15 @@
+:root {
+  --text-default: #333;
+  --text-secondary: #666;
+  --border-color-default: #eee;
+  --border-color-secondary: #f8f8f8;
+  --background-highlight: #f8f8f8;
+  --data-color-cases-default: hsl(25, 100%, 70%); /* #ffa464; */
+  --data-color-cases-secondary: hsl(25, 100%, 90%);
+  --data-color-deaths-default: hsl(348, 100%, 70%); /* #ff6484; */
+  --data-color-deaths-secondary: hsl(348, 100%, 90%);
+}
+
 body {
   margin: 0 auto;
   padding: 10px;
@@ -22,14 +34,11 @@ code {
     monospace;
 }
 
-:root {
-  --text-default: #333;
-  --text-secondary: #666;
-  --border-color-default: #eee;
-  --border-color-secondary: #f8f8f8;
-  --background-highlight: #f8f8f8;
-  --data-color-cases-default: hsl(25, 100%, 70%); /* #ffa464; */
-  --data-color-cases-secondary: hsl(25, 100%, 90%);
-  --data-color-deaths-default: hsl(348, 100%, 70%); /* #ff6484; */
-  --data-color-deaths-secondary: hsl(348, 100%, 90%);
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+a.active {
+  color: var(--text-secondary);
 }

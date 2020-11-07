@@ -1,11 +1,12 @@
 import _ from "lodash";
 import React, { useState } from "react";
+import { useRouteMatch } from "react-router-dom";
 import useMedia from "use-media";
 import styled from "styled-components/macro";
 import Heading from "./Heading";
 import Bars from "./Bars";
+import * as helpers from "./helpers";
 
-const MIN_CASES = 10000;
 const WIDE_BREAKPOINT = "1000px";
 
 const Table = styled.table`
@@ -56,6 +57,7 @@ const formatter = new Intl.NumberFormat("da-DK");
 
 const CountryRow = ({
   isWide,
+  filterCountry,
   country,
   newCases,
   newDeaths,
@@ -66,11 +68,23 @@ const CountryRow = ({
 
   const totalCasesFormatted = formatter.format(totalCases);
   const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
-  const casesBars = <Bars data={newCases} type="cases" isCompact />;
+  const casesBars = (
+    <Bars
+      data={newCases}
+      type="cases"
+      factor={helpers.getCaseFactor(filterCountry)}
+      isCompact
+    />
+  );
   const totalDeathsFormatted = formatter.format(totalDeaths);
   const latestDeathsFormatted = `+${formatter.format(_.last(newDeaths))}`;
   const deathsBars = (
-    <Bars data={newDeaths} type="deaths" factor={10} isCompact />
+    <Bars
+      data={newDeaths}
+      type="deaths"
+      factor={helpers.getDeathFactor(filterCountry)}
+      isCompact
+    />
   );
 
   return (
@@ -134,6 +148,9 @@ const CountryRow = ({
 };
 
 export default ({ data, dateRange, isLoading }) => {
+  const routeMatch = useRouteMatch("/:country");
+  const filterCountry = routeMatch?.params.country;
+
   const isWide = useMedia({ minWidth: WIDE_BREAKPOINT });
   const [sortKey, setSortKey] = useState("totalCases");
 
@@ -182,10 +199,12 @@ export default ({ data, dateRange, isLoading }) => {
         </Head>
       )}
       {_.chain(data)
-        .filter(({ totalCases }) => totalCases > MIN_CASES)
+        .filter(({ country, totalCases }) =>
+          helpers.filterCountries(filterCountry, country, totalCases)
+        )
         .orderBy([sortKey], ["desc"])
         .map((countryData, i) => (
-          <CountryRow key={i} {...{ isWide, ...countryData }} />
+          <CountryRow key={i} {...{ filterCountry, isWide, ...countryData }} />
         ))
         .value()}
     </Table>
