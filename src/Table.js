@@ -5,7 +5,8 @@ import styled from "styled-components/macro";
 import Heading from "./Heading";
 import Bars from "./Bars";
 
-const WIDE_BREAKPOINT = "770px";
+const MIN_CASES = 10000;
+const WIDE_BREAKPOINT = "1000px";
 
 const Table = styled.table`
   width: 100%;
@@ -181,7 +182,7 @@ export default ({ data, dateRange, isLoading }) => {
         </Head>
       )}
       {_.chain(data)
-        .filter(({ totalCases }) => totalCases > 1000)
+        .filter(({ totalCases }) => totalCases > MIN_CASES)
         .orderBy([sortKey], ["desc"])
         .map((countryData, i) => (
           <CountryRow key={i} {...{ isWide, ...countryData }} />
