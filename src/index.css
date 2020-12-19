@@ -3,6 +3,7 @@
   --text-secondary: #666;
   --border-color-default: #eee;
   --border-color-secondary: #f8f8f8;
+  --background-default: #fff;
   --background-highlight: #f8f8f8;
   --data-color-cases-default: hsl(25, 100%, 70%); /* #ffa464; */
   --data-color-cases-secondary: hsl(25, 100%, 90%);
@@ -21,6 +22,7 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: var(--text-default);
+  background: var(--background-default);
 }
 
 @supports (padding: max(0px)) {

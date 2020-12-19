@@ -4,7 +4,6 @@ import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components/macro";
 import * as helpers from "./helpers";
 import useBreakpoint from "./useBreakpoint";
-import Heading from "./Heading";
 import Bars from "./Bars";
 
 const Table = styled.table`
@@ -12,8 +11,6 @@ const Table = styled.table`
   margin: 0 auto;
   border-spacing: 0;
 `;
-
-const Caption = styled.caption``;
 
 const Head = styled.thead``;
 
@@ -202,9 +199,6 @@ export default ({ data, dateRange, isLoading }) => {
 
   return (
     <Table>
-      <Caption>
-        <Heading dateRange={dateRange} isLoading={isLoading} />
-      </Caption>
       {_.size(data) > 0 && (
         <Head>
           <Row>
