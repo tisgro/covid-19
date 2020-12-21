@@ -14,10 +14,7 @@ const Table = styled.table`
 
 const Head = styled.thead``;
 
-const Body = styled.tbody`
-  background: ${(props) => props.isSelected && `var(--background-highlight)`};
-  transition: background-color 200ms;
-`;
+const Body = styled.tbody``;
 
 const Row = styled.tr`
   vertical-align: bottom;
@@ -59,8 +56,6 @@ const CountryRow = ({
   totalCases,
   totalDeaths,
 }) => {
-  const [isSelected, setIsSelected] = useState(false);
-
   const totalCasesFormatted = formatter.format(totalCases);
   const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
   const casesBars = (
@@ -83,7 +78,7 @@ const CountryRow = ({
   );
 
   return (
-    <Body isSelected={isSelected} onClick={() => setIsSelected(!isSelected)}>
+    <Body>
       {breakpoint === "wide" && (
         <Row>
           <Cell>{country}</Cell>
