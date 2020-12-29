@@ -7,7 +7,7 @@ export default ({ data, type, factor = 1000 }) => {
     id: i,
     value: Math.max(d, 0),
   }));
-  const height = _.ceil(_.max(data) / factor) + 4; // add top margin
+  const height = _.ceil(_.max(data) / factor);
   const documentStyle = window.getComputedStyle(document.documentElement);
   const dataColor = documentStyle.getPropertyValue(
     `--data-color-${type}-default`
@@ -25,7 +25,7 @@ export default ({ data, type, factor = 1000 }) => {
       keys={["value"]}
       colors={dataColor}
       padding={0}
-      margin={{ top: 0, right: 0, bottom: 1, left: 0 }}
+      margin={{ top: 4, right: 0, bottom: 1, left: 0 }}
       enableGridX={false}
       enableGridY={true}
       gridYValues={[0]}
