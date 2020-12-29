@@ -23,6 +23,36 @@ const URL_CASES =
 const URL_DEATHS =
   "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
 
+// count the number of zeros in the data array immediately preceding, but not including, the data at startIndex
+const countPrevZeros = (data, startIndex) => {
+  if (data[startIndex] === 0) return 0;
+
+  let i = startIndex;
+  while (data[i - 1] === 0) {
+    i--;
+  }
+
+  return startIndex - i;
+};
+
+const fixPrevZeros = ({ deltas }) => {
+  _.forEach(deltas, (delta, i) => {
+    const count = countPrevZeros(deltas, i);
+    if (count > 0) {
+      const newDelta = _.round(delta / count);
+      _.fill(deltas, newDelta, i - count, i + 1);
+    }
+  });
+};
+
+const CASE_FIXERS = {
+  // one massive data spike at 323
+  Turkey: ({ deltas }) => (deltas[323] = deltas[324]),
+  Switzerland: fixPrevZeros,
+  Sweden: fixPrevZeros,
+  Spain: fixPrevZeros,
+};
+
 const getDeltas = (data) =>
   _.map(data, (datum, i) => (i === 0 ? datum : datum - data[i - 1]));
 
@@ -88,6 +118,11 @@ export default () => (WrappedComponent) => (props) => {
 
   const cases = parseData(rawCases);
   const deaths = parseData(rawDeaths);
+
+  //  fix case data
+  _.forEach(CASE_FIXERS, (fixer, country) => {
+    fixer(_.find(cases, { country }));
+  });
 
   const data = _.map(cases, ({ country, deltas, total }) => ({
     country,
