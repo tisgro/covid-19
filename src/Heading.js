@@ -38,7 +38,7 @@ export default ({ countries, dateRange, isLoading }) => (
     <DateRange>
       {isLoading
         ? "Loading..."
-        : _.chain(dateRange)
+        : _.chain([_.first(dateRange), _.last(dateRange)])
             .map((d) => format(d, "d MMM"))
             .join(" → ")
             .value()}

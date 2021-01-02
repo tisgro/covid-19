@@ -1,8 +1,10 @@
 import _ from "lodash";
 import React from "react";
 import { BarCanvas as Bar } from "@nivo/bar";
+import { format } from "date-fns";
+import * as helpers from "./helpers";
 
-export default ({ data, type, factor = 1000 }) => {
+export default ({ data, dateRange, type, factor = 1000 }) => {
   const barData = _.map(data, (d, i) => ({
     id: i,
     value: Math.max(d, 0),
@@ -43,6 +45,11 @@ export default ({ data, type, factor = 1000 }) => {
           },
         },
       }}
+      tooltip={({ index, value, color }) => (
+        <span style={{ color }}>
+          {format(dateRange[index], "d MMM")}: {helpers.formatNumber(value)}
+        </span>
+      )}
     />
   );
 };

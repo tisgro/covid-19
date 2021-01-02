@@ -132,10 +132,10 @@ export default () => (WrappedComponent) => (props) => {
     totalDeaths: _.get(_.find(deaths, { country }), "total"),
   }));
 
-  const dateRange = _.map(
-    [rawCases[0][INDEX_FIRST_DAY], _.last(rawCases[0])],
-    (d) => parse(d, DATE_FORMAT, new Date())
-  );
+  const dateRange = _.chain(rawCases[0])
+    .slice(INDEX_FIRST_DAY)
+    .map((d) => parse(d, DATE_FORMAT, new Date()))
+    .value();
 
   return <WrappedComponent data={data} dateRange={dateRange} {...props} />;
 };

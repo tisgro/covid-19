@@ -18,6 +18,8 @@ const DEATH_FACTORS = {
   lithuania: 1,
 };
 
+export const formatNumber = new Intl.NumberFormat("da-DK").format;
+
 export const getCaseFactor = (country) =>
   CASE_FACTORS[_.lowerCase(country)] || 1000;
 

@@ -45,10 +45,9 @@ const Sortable = styled.span`
   -webkit-tap-highlight-color: transparent;
 `;
 
-const formatter = new Intl.NumberFormat("da-DK");
-
 const CountryRow = ({
   breakpoint,
+  dateRange,
   filterCountry,
   country,
   newCases,
@@ -56,21 +55,23 @@ const CountryRow = ({
   totalCases,
   totalDeaths,
 }) => {
-  const totalCasesFormatted = formatter.format(totalCases);
-  const latestCasesFormatted = `+${formatter.format(_.last(newCases))}`;
+  const totalCasesFormatted = helpers.formatNumber(totalCases);
+  const latestCasesFormatted = `+${helpers.formatNumber(_.last(newCases))}`;
   const casesBars = (
     <Bars
       data={newCases}
+      dateRange={dateRange}
       type="cases"
       factor={helpers.getCaseFactor(filterCountry)}
       isCompact
     />
   );
-  const totalDeathsFormatted = formatter.format(totalDeaths);
-  const latestDeathsFormatted = `+${formatter.format(_.last(newDeaths))}`;
+  const totalDeathsFormatted = helpers.formatNumber(totalDeaths);
+  const latestDeathsFormatted = `+${helpers.formatNumber(_.last(newDeaths))}`;
   const deathsBars = (
     <Bars
       data={newDeaths}
+      dateRange={dateRange}
       type="deaths"
       factor={helpers.getDeathFactor(filterCountry)}
       isCompact
@@ -237,7 +238,7 @@ export default ({ data, dateRange, isLoading }) => {
         .map((countryData, i) => (
           <CountryRow
             key={i}
-            {...{ filterCountry, breakpoint, ...countryData }}
+            {...{ filterCountry, breakpoint, dateRange, ...countryData }}
           />
         ))
         .value()}
