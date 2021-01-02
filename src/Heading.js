@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import styled from "styled-components/macro";
 import Search from "./search";
@@ -27,7 +27,9 @@ const DateRange = styled.div`
 export default ({ countries, dateRange, isLoading }) => (
   <Header>
     <Title>
-      <NavLink to="/">COVID-19</NavLink>
+      <Link className="plain" to="/">
+        COVID-19
+      </Link>
     </Title>
     <Search
       options={countries}

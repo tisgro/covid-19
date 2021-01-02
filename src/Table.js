@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React, { useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, Link } from "react-router-dom";
 import styled from "styled-components/macro";
 import * as helpers from "./helpers";
 import useBreakpoint from "./useBreakpoint";
@@ -62,6 +62,7 @@ const CountryRow = ({
       data={newCases}
       dateRange={dateRange}
       type="cases"
+      height={filterCountry ? 300 : undefined}
       factor={helpers.getCaseFactor(filterCountry)}
       isCompact
     />
@@ -73,16 +74,23 @@ const CountryRow = ({
       data={newDeaths}
       dateRange={dateRange}
       type="deaths"
+      height={filterCountry ? 100 : undefined}
       factor={helpers.getDeathFactor(filterCountry)}
       isCompact
     />
+  );
+
+  const countryLink = (
+    <Link className="plain" to={`/${country}`}>
+      {country}
+    </Link>
   );
 
   return (
     <Body>
       {breakpoint === "wide" && (
         <Row>
-          <Cell>{country}</Cell>
+          <Cell>{countryLink}</Cell>
           <Cell align="end" type="cases">
             {totalCasesFormatted}
           </Cell>
@@ -108,7 +116,7 @@ const CountryRow = ({
         <>
           <Row>
             <Cell colSpan={4} isBorderless>
-              {country}
+              {countryLink}
             </Cell>
           </Row>
           <Row>
@@ -139,7 +147,7 @@ const CountryRow = ({
         <>
           <Row>
             <Cell colSpan={2} isBorderless>
-              {country}
+              {countryLink}
             </Cell>
           </Row>
           <Row>

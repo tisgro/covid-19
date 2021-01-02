@@ -49,3 +49,7 @@ a {
 a.active {
   color: var(--text-secondary);
 }
+
+a.plain {
+  color: inherit;
+}

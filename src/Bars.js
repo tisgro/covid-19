@@ -4,12 +4,12 @@ import { BarCanvas as Bar } from "@nivo/bar";
 import { format } from "date-fns";
 import * as helpers from "./helpers";
 
-export default ({ data, dateRange, type, factor = 1000 }) => {
+export default ({ data, dateRange, type, height, factor = 1000 }) => {
   const barData = _.map(data, (d, i) => ({
     id: i,
     value: Math.max(d, 0),
   }));
-  const height = _.ceil(_.max(data) / factor);
+  const barHeight = height || _.ceil(_.max(data) / factor);
   const documentStyle = window.getComputedStyle(document.documentElement);
   const dataColor = documentStyle.getPropertyValue(
     `--data-color-${type}-default`
@@ -21,7 +21,7 @@ export default ({ data, dateRange, type, factor = 1000 }) => {
   return (
     <Bar
       width={_.size(data)}
-      height={height}
+      height={barHeight}
       data={barData}
       indexBy="id"
       keys={["value"]}
