@@ -67,7 +67,7 @@ export default ({ options, onSelect }) => {
           setTimeout(() => {
             target.value = "";
             setFilter("");
-          }, 10);
+          }, 100);
         }}
         onKeyUp={(e) => {
           setFilter(e.target.value);
