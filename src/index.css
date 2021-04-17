@@ -38,7 +38,7 @@ code {
 
 svg,
 canvas {
-  vertical-align: bottom;
+  display: block;
 }
 
 a {

@@ -97,7 +97,7 @@ const CountryRow = ({
           <Cell align="end" type="cases">
             {latestCasesFormatted}
           </Cell>
-          <Cell align="end" width={1} isBorderless>
+          <Cell align="end" isBorderless>
             {casesBars}
           </Cell>
           <Cell align="end" isBorderless></Cell>
@@ -107,7 +107,7 @@ const CountryRow = ({
           <Cell align="end" type="deaths">
             {latestDeathsFormatted}
           </Cell>
-          <Cell align="end" width={1} isBorderless>
+          <Cell align="end" isBorderless>
             {deathsBars}
           </Cell>
         </Row>
@@ -131,13 +131,13 @@ const CountryRow = ({
             <Cell align="end" type="cases">
               {totalCasesFormatted}
             </Cell>
-            <Cell align="end" type="cases" width={1}>
+            <Cell align="end" type="cases">
               {latestCasesFormatted}
             </Cell>
             <Cell align="end" type="deaths">
               {totalDeathsFormatted}
             </Cell>
-            <Cell align="end" type="deaths" width={1}>
+            <Cell align="end" type="deaths">
               {latestDeathsFormatted}
             </Cell>
           </Row>
@@ -159,7 +159,7 @@ const CountryRow = ({
             <Cell align="end" type="cases" isBorderless>
               {totalCasesFormatted}
             </Cell>
-            <Cell align="end" type="cases" isBorderless width={1}>
+            <Cell align="end" type="cases" isBorderless>
               {latestCasesFormatted}
             </Cell>
           </Row>
@@ -172,7 +172,7 @@ const CountryRow = ({
             <Cell align="end" type="deaths">
               {totalDeathsFormatted}
             </Cell>
-            <Cell align="end" type="deaths" width={1}>
+            <Cell align="end" type="deaths">
               {latestDeathsFormatted}
             </Cell>
           </Row>
